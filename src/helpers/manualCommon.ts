@@ -1,7 +1,5 @@
-import { ApplicationSession } from "@esri/arcgis-rest-auth";
 import {
   IFeature,
-  IQueryFeaturesResponse,
   queryFeatures,
   updateFeatures,
 } from "@esri/arcgis-rest-feature-layer";
@@ -35,13 +33,15 @@ const processQueue = async () => {
   isProcessing = false; // Mark processing as finished
 };
 // Function to get feature layer metadata (like title, description, etc.)
-export async function getFeatureLayerDetails(session: ApplicationSession) {
+export async function getFeatureLayerDetails(token: string) {
   try {
     const featureServiceUrl = process.env.ARCGIS_FEATURE_LAYER_URL!;
     const featureLayerDetails = await request(featureServiceUrl, {
-      authentication: session,
       params: {
         f: "json", // Get the details in JSON format
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
     return featureLayerDetails;

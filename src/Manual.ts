@@ -110,8 +110,8 @@ app.post("/boxwebhook", async (req: Request, res: Response) => {
 // Route to get feature layer metadata
 app.get("/feature-layer", async (req: Request, res: Response) => {
   try {
-    const session = await getArcGISToken();
-    const layerMetadata = await getFeatureLayerDetails(session);
+    const token = await getArcGISToken();
+    const layerMetadata = await getFeatureLayerDetails(token);
 
     res.status(200).json(layerMetadata);
   } catch (error) {
@@ -130,14 +130,12 @@ app.get("/feature-layer", async (req: Request, res: Response) => {
 app.post("/arcgiswebhook", async (req: Request, res: Response) => {
   try {
     console.log("Webhook received:", req.body);
-    const session = await getArcGISToken();
+    const token = await getArcGISToken();
 
     const decodeurl = decodeURIComponent(req.body[0].changesUrl);
     console.log({ decodeurl });
 
-    let urlWithParams = `${decodeurl}&f=json&token=${await session.getToken(
-      decodeurl
-    )}`;
+    let urlWithParams = `${decodeurl}&f=json&token=${token}`;
     console.log({ urlWithParams });
 
     let response = await axios.get(urlWithParams);
@@ -158,9 +156,7 @@ app.post("/arcgiswebhook", async (req: Request, res: Response) => {
     const maxRetries = 12;
 
     while (!jobCompleted && retryCount < maxRetries) {
-      urlWithParams = `${statusUrl}?f=json&token=${await session.getToken(
-        statusUrl
-      )}`;
+      urlWithParams = `${statusUrl}?f=json&token=${token}`;
       console.log({ urlWithParams });
 
       response = await axios.get(urlWithParams);
@@ -185,9 +181,7 @@ app.post("/arcgiswebhook", async (req: Request, res: Response) => {
     }
 
     if (resultUrl) {
-      urlWithParams = `${resultUrl}?f=json&token=${await session.getToken(
-        resultUrl
-      )}`;
+      urlWithParams = `${resultUrl}?f=json&token=${token}`;
       console.log({ urlWithParams });
 
       response = await axios.get(urlWithParams);

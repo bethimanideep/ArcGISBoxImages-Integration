@@ -109,7 +109,7 @@ app.post("/boxwebhook", async (req: Request, res: Response) => {
 
 app.post("/arcgiswebhook", async (req: Request, res: Response) => {
   try {
-    const token = await getArcGISToken(); // Get the ArcGIS session/token
+    const token = await getArcGISToken(); // Get the ArcGIS /token
 
     // Extract the changesUrl from the webhook response
     const decodeurl = decodeURIComponent(req.body[0].changesUrl);
